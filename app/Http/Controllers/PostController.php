@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\EmailJob;
 use Illuminate\Validation\ValidationException;
 use App\Services\SubscriptionService;
+use App\Events\PostCreated;
 
 class PostController extends Controller
 {
@@ -52,18 +53,26 @@ class PostController extends Controller
             // crate new post
             $post = Post::create($valid_request_data);
 
-            // set all active subscriber list to job table against post id
-            $this->subscriptionService->setPostToSubscriber($post->id);
+            // create event
+            // event(new PostCreated($post)); 
+            PostCreated::dispatch($post);
 
             // send success response
-            return $this->success($post, 'Post created successfully! Email job for subscriber is added.', 201);
+            return $this->success(
+                $post, 
+                'Post created successfully! Email job for subscriber is added.', 
+                201
+            );
 
         } catch (ValidationException $e) {
             
             $errors = $e->errors();
 
             // send error response
-            return $this->validationError($errors, 'Validation failed');
+            return $this->validationError(
+                $errors, 
+                'Validation failed'
+            );
         }
     }
 

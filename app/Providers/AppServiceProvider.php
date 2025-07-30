@@ -6,8 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Pagination\Paginator;
-use App\Services\Interfaces\UserServiceInterface;
-use App\Services\UserService;
+
+use Illuminate\Support\Facades\Event;
+use App\Events\PostCreated;
+use App\Listeners\SendPostNotificationEmail;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(UserServiceInterface::class, UserService::class);
+        
     }
 
     /**
@@ -24,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 
+        // Manual registartion
+        // Event::listen(
+        //     PostCreated::class,
+        //     SendPostNotificationEmail::class
+        // );
     }
 }

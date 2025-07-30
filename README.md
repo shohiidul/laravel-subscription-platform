@@ -116,6 +116,7 @@ To run this project, you will need to add the following environment variables to
 - Run this below command on terminal to test
 - Also set this below commad on `Supervisord` to send email autometically every time. To set it please check documentation of `Supervisord` 
 ```bash
+php artisan queue:work --verbose
 php artisan subscription-email:dispatch
 ```
 ### Postman Collection

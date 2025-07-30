@@ -13,10 +13,20 @@ return new class extends Migration
     {
         Schema::create('email_jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('subscription_id');
-            $table->longText('post_id');
+
+            // Set as unsignedBigInteger
+            $table->unsignedBigInteger('subscription_id');
+            $table->unsignedBigInteger('post_id');
+
             $table->unsignedInteger('status')->default(0);
             $table->timestamps();
+
+            // Add foreign key constraints
+            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+
+            // Make the combination unique
+            $table->unique(['subscription_id', 'post_id']);
         });
     }
 
@@ -28,3 +38,4 @@ return new class extends Migration
         Schema::dropIfExists('email_jobs');
     }
 };
+

@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use App\Events\PostCreated;
+
 use App\Traits\ApiResponse;
-use App\Models\Post;
-use App\Models\EmailJob;
 use App\Services\WebPortalService;
 
-class PostController extends Controller
+class WebPortalController extends Controller
 {
     use ApiResponse;
 
@@ -34,7 +33,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**
@@ -46,34 +45,15 @@ class PostController extends Controller
 
             // validate input data
             $valid_request_data = $request->validate([
-                'title' => 'required|string|max:255',
-                'body' => 'required|string',
+                'portal_name' => 'required|string|max:255',
             ]);
 
-            $secretKey = request()->header('SecretKey');
-            $webPortal = $this->webPortalService->getActivePortalByKey($secretKey);
-            if($webPortal===null){
-                return $this->error(
-                    'Invalid web portal infomation'
-                );
-                exit();                
-            }
-
-            echo $webPortal->id;
-
-            die;
-
-            // crate new post
-            $post = Post::create($valid_request_data);
-
-            // create event
-            // event(new PostCreated($post)); 
-            PostCreated::dispatch($post);
+            $webPortal = $this->webPortalService->create($valid_request_data);
 
             // send success response
             return $this->success(
-                $post, 
-                'Post created successfully! Email job for subscriber is added.', 
+                $webPortal, 
+                'Web portal created successfully!', 
                 201
             );
 
@@ -92,20 +72,34 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(string $secretKey)
     {
-        // send succes response
-        return $this->success(
-            $post->toArray() , 
-            'Success', 
-            201
-        );
+        try {        
+            $webPortal = $this->webPortalService->getActivePortalByKey($secretKey);
+
+            if($webPortal===null)
+                throw new ModelNotFoundException("Data not found.");             
+
+            // send success response
+            return $this->success(
+                $webPortal, 
+                'Success', 
+                201
+            );
+
+        } catch (ModelNotFoundException $e) {
+
+            // send error response
+            return $this->error(
+                $e->getMessage()
+            );
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post)
+    public function edit(string $id)
     {
         //
     }
@@ -113,7 +107,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -121,7 +115,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(string $id)
     {
         //
     }

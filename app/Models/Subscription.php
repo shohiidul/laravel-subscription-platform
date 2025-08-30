@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+use App\Models\WebPortal;
+
 class Subscription extends Model
 {
     use HasFactory;
@@ -21,5 +23,10 @@ class Subscription extends Model
         return [
             'email_verified_at' => 'datetime',
         ];
+    }  
+
+    public function webPortal()
+    {
+        return $this->belongsTo(Subscription::class, 'portal_id', 'id');
     }  
 }

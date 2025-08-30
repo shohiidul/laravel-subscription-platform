@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+// use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,15 +19,17 @@ class DatabaseSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
 
         DB::table('users')->truncate();
-        DB::table('subscriptions')->truncate();
+        DB::table('web_portals')->truncate();
         DB::table('posts')->truncate();
+        DB::table('subscriptions')->truncate();
 
         Schema::enableForeignKeyConstraints();
         
         $this->call([
             UserSeeder::class,
-            SubscriptionSeeder::class,
+            WebPortalSeeder::class,
             PostSeeder::class,
+            SubscriptionSeeder::class,
         ]);
 
     }

@@ -3,12 +3,18 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\WebPortalController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SubscriptionsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+Route::prefix('web-portal')->group(function () {
+    Route::post('/create', [WebPortalController::class, 'store'])->name('webportal.store');
+    Route::get('/show/{secretKey}', [WebPortalController::class, 'show'])->name('webportal.show');
+});
 
 Route::prefix('posts')->group(function () {
     Route::post('/create', [PostController::class, 'store'])->name('posts.store');

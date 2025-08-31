@@ -1,0 +1,14 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+        - routes
+        - database
+        - tests
+    level: 7  # max = 9, start with 7 for Laravel
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\.*#'
+    bootstrapFiles:
+        - ./vendor/autoload.php
